@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import { Form, Row, Input, Select, Button, Col, Card } from 'antd';
 
 const layout = {
@@ -58,148 +58,205 @@ let ng = [
 
 export default function FormPanel() {
 
-	const [ fiAngle, setFiAngle ] = useState(0);
+	const [ form ] = Form.useForm();
 
+	const onFiAngleChange = ( value ) => {
+		form.setFieldsValue( {
+			'nc': nc[ value ],
+			'nq': nq[ value ],
+			'ng': ng[ value ],
+		} );
+	}
 
-	// const [ form ] = Form.useForm();
+	const onBasicTypeChange = ( value ) => {
+		// eslint-disable-next-line default-case
 
-	// const onFiAngleChange = ( value ) => {
-	// 	form.setFieldsValue( {
-	// 		'nc': nc[ value ],
-	// 		'nq': nq[ value ],
-	// 		'ng': ng[ value ],
-	// 	} );
-	// }
+		let basicWidth = parseInt(form.getFieldValue('basicWidth'));
+		let basicLength = parseInt(form.getFieldValue('basicLength'));
+
+		switch (value) {
+			case '1':
+				form.setFieldsValue({
+					'k1': 1,
+					'k2': 1.5,
+				});
+				break;
+				case '2':
+				form.setFieldsValue({
+					'k1': 1.3,
+					'k2': 0.4,
+				});
+				break;
+				case '3':
+				form.setFieldsValue({
+					'k1': 1.3,
+					'k2': 0.3,
+				});
+				break;
+			case '4':
+				// if ( typeof basicWidth == 'undefined' || basicWidth = '') {
+				//
+				// }
+				form.setFieldsValue({
+					'k1': (0.2 * basicWidth  / basicLength + 1),
+					'k2': ((0.5) - ((0.1) * basicWidth / basicLength))
+				});
+				break;
+			default:
+				form.setFieldsValue({
+					'k1': 1,
+					'k2': 1
+				});
+				break;
+		}
+	}
 
 	return (
 		<Row>
-			<Col span={ 12 }>
+			<Col span={ 24 }>
 				<Card type="inner">
-					<Form.Item
-						label="Temel Genişliği"
-						name="basicWidth"
-						rules={ [ { required: true, message: 'Lütfen temel genişliğini girin' } ] }
+					<Form
+						{ ...layout }
+						name="basic"
+						form={ form }
 					>
-						<Input suffix="m"/>
-					</Form.Item>
+						<Row>
+							<Col span={ 20 }>
+								<Form.Item
+									label="Temel Genişliği"
+									name="basicWidth"
+									rules={ [ { required: true, message: 'Lütfen temel genişliğini girin' } ] }
+								>
+									<Input suffix="m" />
+								</Form.Item>
 
-					<Form.Item
-						label="Temel Uzunluğu"
-						name="basicLength"
-						rules={ [ { required: true, message: 'Lütfen temel uzunluğunu girin' } ] }
-					>
-						<Input suffix="m"/>
-					</Form.Item>
+								<Form.Item
+									label="Temel Uzunluğu"
+									name="basicLength"
+									rules={ [ { required: true, message: 'Lütfen temel uzunluğunu girin' } ] }
+								>
+									<Input suffix="m"/>
+								</Form.Item>
 
-					<Form.Item
-						label="Temel Şekli"
-						name="basicType"
-						rules={ [ { required: true, message: 'Lütfen temel seçimi yapın' } ] }
-					>
-						<Select
-							showSearch
-							placeholder="Seçiniz"
-							optionFilterProp="children"
-						>
-							<Option value="1">Şerit Temel</Option>
-							<Option value="2">Kare Temel</Option>
-							<Option value="3">Daire Temel</Option>
-							<Option value="4">Dikdörtgen Temel</Option>
-						</Select>
-					</Form.Item>
+								<Form.Item
+									label="Temel Şekli"
+									name="basicType"
+									rules={ [
+										{
+											required: true,
+											message: 'Lütfen temel seçimi yapın'
+										}
+									] }
+									dependencies={['basicWidth', 'basicLength']}
+								>
+									<Select
+										showSearch
+										placeholder="Seçiniz"
+										optionFilterProp="children"
+										onChange={ onBasicTypeChange }
+									>
+										<Option value="1">Şerit Temel</Option>
+										<Option value="2">Kare Temel</Option>
+										<Option value="3">Daire Temel</Option>
+										<Option value="4">Dikdörtgen Temel</Option>
+									</Select>
+								</Form.Item>
 
-					<Form.Item
-						label="Kohezyon"
-						name="cohesion"
-						rules={ [ { required: true, message: 'Lütfen Kohezyon değerini girin' } ] }
-					>
-						<Input suffix="Kg/cm2"/>
-					</Form.Item>
+								<Form.Item
+									label="Kohezyon"
+									name="cohesion"
+									rules={ [ { required: true, message: 'Lütfen Kohezyon değerini girin' } ] }
+								>
+									<Input suffix="Kg/cm2"/>
+								</Form.Item>
 
-					<Form.Item
-						label="Fi Açısı"
-						name="fiAngle"
-						rules={ [ { required: true, message: 'Lütfen fi açısını seçin' } ] }
-					>
-						<Select
-							showSearch
-							placeholder="Seçiniz"
-							optionFilterProp="children"
-							onChange={ (fiAngle) => { setFiAngle(fiAngle) } }
-						>
-							{ fiOptions }
-						</Select>
-					</Form.Item>
+								<Form.Item
+									label="Fi Açısı"
+									name="fiAngle"
+									rules={ [ { required: true, message: 'Lütfen fi açısını seçin' } ] }
+								>
+									<Select
+										showSearch
+										placeholder="Seçiniz"
+										optionFilterProp="children"
+										onChange={ onFiAngleChange }
+									>
+										{ fiOptions }
+									</Select>
+								</Form.Item>
 
-					<Form.Item
-						label="Doğal Birim Hacim Ağırlık"
-						name="basicLength"
-						rules={ [ { required: true, message: 'Lütfen doğal birim hacim ağırlık girin' } ] }
-					>
-						<Input suffix="t/m3"/>
-					</Form.Item>
+								<Form.Item
+									label="Doğal Birim Hacim Ağırlık"
+									name="basicLength"
+									rules={ [ { required: true, message: 'Lütfen doğal birim hacim ağırlık girin' } ] }
+								>
+									<Input suffix="t/m3"/>
+								</Form.Item>
 
-					<Form.Item
-						label="Temel Derinliği"
-						name="basicDepth"
-						rules={ [ { required: true, message: 'Lütfen temel derinliğini girin' } ] }
-					>
-						<Input suffix="m"/>
-					</Form.Item>
+								<Form.Item
+									label="Temel Derinliği"
+									name="basicDepth"
+									rules={ [ { required: true, message: 'Lütfen temel derinliğini girin' } ] }
+								>
+									<Input suffix="m"/>
+								</Form.Item>
 
-					<Form.Item
-						label="Güvenlik Katsayısı"
-						name="safetyFactor"
-						rules={ [ { required: true, message: 'Lütfen temel güvenlik katsayısını girin' } ] }
-					>
-						<Input/>
-					</Form.Item>
+								<Form.Item
+									label="Güvenlik Katsayısı"
+									name="safetyFactor"
+									rules={ [ { required: true, message: 'Lütfen temel güvenlik katsayısını girin' } ] }
+								>
+									<Input/>
+								</Form.Item>
+							</Col>
+							<Col span={ 4 }>
+								<Card type="inner" style={ { borderColor: "transparent" } }>
+									<Form.Item
+										label="K1"
+										name="k1"
+									>
+										<Input/>
+									</Form.Item>
+									<Form.Item
+										label="K2"
+										name="k2"
+									>
+										<Input/>
+									</Form.Item>
+									<Form.Item
+										label="Nc"
+										name="nc"
+									>
+										<Input/>
+									</Form.Item>
 
-					<Form.Item { ...tailLayout }>
-						<Button type="primary" htmlType="submit">
-							Submit
-						</Button>
-					</Form.Item>
+									<Form.Item
+										label="Nq"
+										name="nq"
+									>
+										<Input/>
+									</Form.Item>
+
+									<Form.Item
+										label="Ng"
+										name="ng"
+									>
+										<Input/>
+									</Form.Item>
+								</Card>
+							</Col>
+						</Row>
+						<Form.Item { ...tailLayout }>
+							<Button type="primary" htmlType="submit">
+								Submit
+							</Button>
+						</Form.Item>
+
+					</Form>
 				</Card>
 			</Col>
 
-			<Col span={ 12 }>
-				<Card type="inner">
-					<Form.Item
-						label="K1 "
-						name="k1"
-					>
-						<Input/>
-					</Form.Item>
-					<Form.Item
-						label="K2"
-						name="k2"
-					>
-						<Input/>
-					</Form.Item>
-					<Form.Item
-						label="Nc"
-						name="nc"
-					>
-						<Input value={nc[ fiAngle ]}/>
-					</Form.Item>
 
-					<Form.Item
-						label="Nq"
-						name="nq"
-					>
-						<Input value={nq[ fiAngle ]}/>
-					</Form.Item>
-
-					<Form.Item
-						label="Ng"
-						name="ng"
-					>
-						<Input value={ng[ fiAngle ]}/>
-						<input value={fiAngle}/>
-					</Form.Item>
-				</Card>
-			</Col>
 		</Row>
 	)
 }
