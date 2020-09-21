@@ -11,7 +11,7 @@ export default function MenuBar() {
     return (
         <Menu mode="horizontal">   
             <SubMenu key="SubMenu" icon={< CaretDownOutlined />} title="Dosya">
-                <Menu.Item key="setting:1" icon={<DownloadOutlined />}>
+                <Menu.Item key="export" icon={<DownloadOutlined />}>
                     Dışarı Aktar
                 </Menu.Item>
             </SubMenu>
