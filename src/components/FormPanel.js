@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form, Row, Modal, Input, Select, Button, Col, Card} from 'antd';
+import {Form, Row, notification, Input, Select, Button, Col, Card} from 'antd';
 
 const layout = {
 	labelCol: {span: 8},
@@ -60,7 +60,6 @@ export default function FormPanel() {
 	const [form] = Form.useForm();
 	const [basicWidth, setBasicWidth] = useState(null);
 	const [basicLength, setBasicLength] = useState(null);
-	const [modal, contextHolder] = Modal.useModal();
 
 	const onFiAngleChange = (value) => {
 		form.setFieldsValue({
@@ -70,19 +69,20 @@ export default function FormPanel() {
 		});
 	}
 
-	const infoRectangularBase = () => {
-		modal.warning({
-			title: 'Uyarı!',
-			content: (
-				<>
-					Lütfen <b>"Temel Genişliği"</b> ve <b>"Temel Uzunluğu"</b> değerlerini girin.
-				</>
-			),
-		});
-		// remove selected item
+	const clearSelectedBaseType = () => {
 		form.setFieldsValue({
 			'basicType': null
 		});
+	}
+
+	const infoRectangularBase = () => {
+		notification['error']({
+			message: 'Uyarı!',
+			description:
+				'Lütfen "Temel Genişliği" ve "Temel Uzunluğu" değerlerini girin.'
+		});
+		// remove selected item
+		clearSelectedBaseType();
 	}
 
 
@@ -145,9 +145,9 @@ export default function FormPanel() {
 								<Form.Item
 									label="Temel Genişliği"
 									name="basicWidth"
-									rules={[{required: true, message: 'Lütfen temel genişliğini girin'}]}
 									onChange={(e) => {
 										setBasicWidth(e.target.value)
+										clearSelectedBaseType();
 									}}
 								>
 									<Input
@@ -157,9 +157,9 @@ export default function FormPanel() {
 								<Form.Item
 									label="Temel Uzunluğu"
 									name="basicLength"
-									rules={[{required: true, message: 'Lütfen temel uzunluğunu girin'}]}
 									onChange={(e) => {
 										setBasicLength(e.target.value)
+										clearSelectedBaseType();
 									}}
 								>
 									<Input suffix="m"/>
@@ -188,7 +188,6 @@ export default function FormPanel() {
 										<Option value="4">Dikdörtgen Temel</Option>
 									</Select>
 								</Form.Item>
-								{contextHolder}
 
 								<Form.Item
 									label="Kohezyon"
