@@ -1,21 +1,21 @@
-import React from 'react';
-import { Form, Row, Input, Select, Button, Col, Card } from 'antd';
+import React, {useState} from 'react';
+import {Form, Row, Modal, Input, Select, Button, Col, Card} from 'antd';
 
 const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 },
+	labelCol: {span: 8},
+	wrapperCol: {span: 16},
 };
 
 const tailLayout = {
-	wrapperCol: { offset: 4, span: 16 },
+	wrapperCol: {offset: 4, span: 16},
 };
 
-const { Option } = Select;
+const {Option} = Select;
 
 const fiOptions = [];
 
-for ( let i = 0; i <= 50; i++ ) {
-	fiOptions.push( <Option key={ i } value={ i }>{ i }</Option> );
+for (let i = 0; i <= 50; i++) {
+	fiOptions.push(<Option key={i} value={i}>{i}</Option>);
 }
 
 let nc = [
@@ -57,22 +57,38 @@ let ng = [
 ];
 
 export default function FormPanel() {
+	const [form] = Form.useForm();
+	const [basicWidth, setBasicWidth] = useState(null);
+	const [basicLength, setBasicLength] = useState(null);
+	const [modal, contextHolder] = Modal.useModal();
 
-	const [ form ] = Form.useForm();
-
-	const onFiAngleChange = ( value ) => {
-		form.setFieldsValue( {
-			'nc': nc[ value ],
-			'nq': nq[ value ],
-			'ng': ng[ value ],
-		} );
+	const onFiAngleChange = (value) => {
+		form.setFieldsValue({
+			'nc': nc[value],
+			'nq': nq[value],
+			'ng': ng[value],
+		});
 	}
 
-	const onBasicTypeChange = ( value ) => {
-		// eslint-disable-next-line default-case
+	const infoRectangularBase = () => {
+		modal.warning({
+			title: 'Uyarı!',
+			content: (
+				<>
+					Lütfen <b>"Temel Genişliği"</b> ve <b>"Temel Uzunluğu"</b> değerlerini girin.
+				</>
+			),
+		});
+		// remove selected item
+		form.setFieldsValue({
+			'basicType': null
+		});
+	}
 
-		let basicWidth = parseInt(form.getFieldValue('basicWidth'));
-		let basicLength = parseInt(form.getFieldValue('basicLength'));
+
+	const onBasicTypeChange = (value) => {
+
+		// eslint-disable-next-line default-case
 
 		switch (value) {
 			case '1':
@@ -81,26 +97,31 @@ export default function FormPanel() {
 					'k2': 1.5,
 				});
 				break;
-				case '2':
+			case '2':
 				form.setFieldsValue({
 					'k1': 1.3,
 					'k2': 0.4,
 				});
 				break;
-				case '3':
+			case '3':
 				form.setFieldsValue({
 					'k1': 1.3,
 					'k2': 0.3,
 				});
 				break;
 			case '4':
-				// if ( typeof basicWidth == 'undefined' || basicWidth = '') {
-				//
-				// }
-				form.setFieldsValue({
-					'k1': (0.2 * basicWidth  / basicLength + 1),
-					'k2': ((0.5) - ((0.1) * basicWidth / basicLength))
-				});
+				if (basicWidth != null &&
+					basicWidth !== '' &&
+					basicLength != null &&
+					basicLength !== ''
+				) {
+					form.setFieldsValue({
+						'k1': (0.2 * basicWidth / basicLength + 1),
+						'k2': ((0.5) - ((0.1) * basicWidth / basicLength))
+					});
+					break;
+				}
+				infoRectangularBase();
 				break;
 			default:
 				form.setFieldsValue({
@@ -110,30 +131,36 @@ export default function FormPanel() {
 				break;
 		}
 	}
-
 	return (
 		<Row>
-			<Col span={ 24 }>
+			<Col span={24}>
 				<Card type="inner">
 					<Form
-						{ ...layout }
+						{...layout}
 						name="basic"
-						form={ form }
+						form={form}
 					>
 						<Row>
-							<Col span={ 20 }>
+							<Col span={18}>
 								<Form.Item
 									label="Temel Genişliği"
 									name="basicWidth"
-									rules={ [ { required: true, message: 'Lütfen temel genişliğini girin' } ] }
+									rules={[{required: true, message: 'Lütfen temel genişliğini girin'}]}
+									onChange={(e) => {
+										setBasicWidth(e.target.value)
+									}}
 								>
-									<Input suffix="m" />
+									<Input
+										suffix="m"/>
 								</Form.Item>
 
 								<Form.Item
 									label="Temel Uzunluğu"
 									name="basicLength"
-									rules={ [ { required: true, message: 'Lütfen temel uzunluğunu girin' } ] }
+									rules={[{required: true, message: 'Lütfen temel uzunluğunu girin'}]}
+									onChange={(e) => {
+										setBasicLength(e.target.value)
+									}}
 								>
 									<Input suffix="m"/>
 								</Form.Item>
@@ -141,19 +168,19 @@ export default function FormPanel() {
 								<Form.Item
 									label="Temel Şekli"
 									name="basicType"
-									rules={ [
+									rules={[
 										{
 											required: true,
 											message: 'Lütfen temel seçimi yapın'
 										}
-									] }
+									]}
 									dependencies={['basicWidth', 'basicLength']}
 								>
 									<Select
 										showSearch
 										placeholder="Seçiniz"
 										optionFilterProp="children"
-										onChange={ onBasicTypeChange }
+										onChange={onBasicTypeChange}
 									>
 										<Option value="1">Şerit Temel</Option>
 										<Option value="2">Kare Temel</Option>
@@ -161,11 +188,12 @@ export default function FormPanel() {
 										<Option value="4">Dikdörtgen Temel</Option>
 									</Select>
 								</Form.Item>
+								{contextHolder}
 
 								<Form.Item
 									label="Kohezyon"
 									name="cohesion"
-									rules={ [ { required: true, message: 'Lütfen Kohezyon değerini girin' } ] }
+									rules={[{required: true, message: 'Lütfen Kohezyon değerini girin'}]}
 								>
 									<Input suffix="Kg/cm2"/>
 								</Form.Item>
@@ -173,22 +201,22 @@ export default function FormPanel() {
 								<Form.Item
 									label="Fi Açısı"
 									name="fiAngle"
-									rules={ [ { required: true, message: 'Lütfen fi açısını seçin' } ] }
+									rules={[{required: true, message: 'Lütfen fi açısını seçin'}]}
 								>
 									<Select
 										showSearch
 										placeholder="Seçiniz"
 										optionFilterProp="children"
-										onChange={ onFiAngleChange }
+										onChange={onFiAngleChange}
 									>
-										{ fiOptions }
+										{fiOptions}
 									</Select>
 								</Form.Item>
 
 								<Form.Item
 									label="Doğal Birim Hacim Ağırlık"
-									name="basicLength"
-									rules={ [ { required: true, message: 'Lütfen doğal birim hacim ağırlık girin' } ] }
+									name="unitWeight"
+									rules={[{required: true, message: 'Lütfen doğal birim hacim ağırlık girin'}]}
 								>
 									<Input suffix="t/m3"/>
 								</Form.Item>
@@ -196,7 +224,7 @@ export default function FormPanel() {
 								<Form.Item
 									label="Temel Derinliği"
 									name="basicDepth"
-									rules={ [ { required: true, message: 'Lütfen temel derinliğini girin' } ] }
+									rules={[{required: true, message: 'Lütfen temel derinliğini girin'}]}
 								>
 									<Input suffix="m"/>
 								</Form.Item>
@@ -204,25 +232,27 @@ export default function FormPanel() {
 								<Form.Item
 									label="Güvenlik Katsayısı"
 									name="safetyFactor"
-									rules={ [ { required: true, message: 'Lütfen temel güvenlik katsayısını girin' } ] }
+									rules={[{required: true, message: 'Lütfen temel güvenlik katsayısını girin'}]}
 								>
 									<Input/>
 								</Form.Item>
 							</Col>
-							<Col span={ 4 }>
-								<Card type="inner" style={ { borderColor: "transparent" } }>
+							<Col span={6}>
+								<Card type="inner" style={{borderColor: "transparent"}}>
 									<Form.Item
 										label="K1"
 										name="k1"
 									>
 										<Input/>
 									</Form.Item>
+
 									<Form.Item
 										label="K2"
 										name="k2"
 									>
 										<Input/>
 									</Form.Item>
+
 									<Form.Item
 										label="Nc"
 										name="nc"
@@ -246,17 +276,14 @@ export default function FormPanel() {
 								</Card>
 							</Col>
 						</Row>
-						<Form.Item { ...tailLayout }>
+						<Form.Item {...tailLayout}>
 							<Button type="primary" htmlType="submit">
 								Submit
 							</Button>
 						</Form.Item>
-
 					</Form>
 				</Card>
 			</Col>
-
-
 		</Row>
 	)
 }
