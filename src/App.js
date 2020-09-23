@@ -3,8 +3,8 @@ import {Row, Col} from 'antd';
 import MenuBar from './components/MenuBar';
 import FormPanel from './components/FormPanel';
 
-import './assets/App.css';
 import 'antd/dist/antd.css';
+import './assets/App.css';
 
 function App() {
 	return (
@@ -12,7 +12,7 @@ function App() {
 			<Row>
 				<Col span={24}><MenuBar/></Col>
 			</Row>
-			<FormPanel/>
+			<FormPanel />
 		</>
 	);
 }

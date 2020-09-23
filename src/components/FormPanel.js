@@ -60,6 +60,8 @@ export default function FormPanel() {
 	const [form] = Form.useForm();
 	const [basicWidth, setBasicWidth] = useState(null);
 	const [basicLength, setBasicLength] = useState(null);
+	const [result, calculate] = useState(0);
+	const [secureResult, calcSafetyFactor] = useState(0);
 
 	const onFiAngleChange = (value) => {
 		form.setFieldsValue({
@@ -85,19 +87,31 @@ export default function FormPanel() {
 		clearSelectedBaseType();
 	}
 
-	const calculate = values => {
-		console.log(values);
+	const test = values => {
+		let cohesion = parseFloat(values.cohesion);
+		let nc = values.nc;
+		let nq = values.nq;
+		let ng = values.ng;
+		let k1 = values.k1;
+		let k2 = values.k2;
+		let basicWidth = parseFloat(values.basicWidth);
+		let unitWeight = parseFloat(values.unitWeight);
+		let basicDepth = parseFloat(values.basicDepth);
+		let safetyFactor = parseFloat(values.safetyFactor);
+
+		let result = (k1 * cohesion * nc) + (unitWeight * basicDepth * nq) + (k2 * ng * basicWidth * safetyFactor);
+
+		calculate(result);
+		calcSafetyFactor(result / safetyFactor);
 	};
 
 	const resetAll = () => {
-		console.log('e');
 		form.resetFields();
+		calculate(0);
+		calcSafetyFactor(0);
 	}
 
 	const onBasicTypeChange = (value) => {
-
-		// eslint-disable-next-line default-case
-
 		switch (value) {
 			case '1':
 				form.setFieldsValue({
@@ -139,6 +153,7 @@ export default function FormPanel() {
 				return;
 		}
 	}
+
 	return (
 		<Row>
 			<Col span={24}>
@@ -147,7 +162,7 @@ export default function FormPanel() {
 						{...layout}
 						name="basic"
 						form={form}
-						onFinish={calculate}
+						onFinish={test}
 					>
 						<Row>
 							<Col span={18}>
@@ -284,32 +299,38 @@ export default function FormPanel() {
 								</Card>
 							</Col>
 						</Row>
-						<Form.Item {...tailLayout}>
-							<Space size="large">
-								<Button type="success" htmlType="submit">
-									Hesapla
-								</Button>
-								<Button type="danger" onClick={resetAll}>
-									Temizle
-								</Button>
-							</Space>
-						</Form.Item>
+
+						<Col span={24}>
+							<Row>
+								<Col span={12}>
+									<Card type="inner">
+										<h3 style={{color: "red"}}>
+											<b>Sonuçlar</b>
+										</h3>
+										<div>
+											<b>Qd taşıma gücü = </b> {result} kg/cm2
+										</div>
+										<div>
+											<b>Qs Emin taşıma gücü = </b> {secureResult} kg/cm2
+										</div>
+									</Card>
+								</Col>
+								<Col span={12}>
+									<Form.Item {...tailLayout}>
+										<Space size="large">
+											<Button type="primary" htmlType="submit">
+												Hesapla
+											</Button>
+											<Button type="danger" onClick={resetAll}>
+												Temizle
+											</Button>
+										</Space>
+									</Form.Item>
+								</Col>
+							</Row>
+						</Col>
 					</Form>
 				</Card>
-			</Col>
-			<Col span={24}>
-				<Row>
-					<Col span={12}>
-						<Card type="inner">
-							3. kart
-						</Card>
-					</Col>
-					<Col span={12}>
-						<Card type="inner">
-							4. kart
-						</Card>
-					</Col>
-				</Row>
 			</Col>
 		</Row>
 	)
