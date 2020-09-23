@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form, Row, notification, Input, Select, Button, Col, Card} from 'antd';
+import {Form, Row, notification, Input, Select, Button, Col, Space, Card} from 'antd';
 
 const layout = {
 	labelCol: {span: 8},
@@ -7,7 +7,7 @@ const layout = {
 };
 
 const tailLayout = {
-	wrapperCol: {offset: 4, span: 16},
+	wrapperCol: {offset: 15, span: 24},
 };
 
 const {Option} = Select;
@@ -85,6 +85,14 @@ export default function FormPanel() {
 		clearSelectedBaseType();
 	}
 
+	const calculate = values => {
+		console.log(values);
+	};
+
+	const resetAll = () => {
+		console.log('e');
+		form.resetFields();
+	}
 
 	const onBasicTypeChange = (value) => {
 
@@ -96,19 +104,19 @@ export default function FormPanel() {
 					'k1': 1,
 					'k2': 1.5,
 				});
-				break;
+				return;
 			case '2':
 				form.setFieldsValue({
 					'k1': 1.3,
 					'k2': 0.4,
 				});
-				break;
+				return;
 			case '3':
 				form.setFieldsValue({
 					'k1': 1.3,
 					'k2': 0.3,
 				});
-				break;
+				return;
 			case '4':
 				if (basicWidth != null &&
 					basicWidth !== '' &&
@@ -119,16 +127,16 @@ export default function FormPanel() {
 						'k1': (0.2 * basicWidth / basicLength + 1),
 						'k2': ((0.5) - ((0.1) * basicWidth / basicLength))
 					});
-					break;
+					return;
 				}
 				infoRectangularBase();
-				break;
+				return;
 			default:
 				form.setFieldsValue({
 					'k1': 1,
 					'k2': 1
 				});
-				break;
+				return;
 		}
 	}
 	return (
@@ -139,6 +147,7 @@ export default function FormPanel() {
 						{...layout}
 						name="basic"
 						form={form}
+						onFinish={calculate}
 					>
 						<Row>
 							<Col span={18}>
@@ -276,12 +285,31 @@ export default function FormPanel() {
 							</Col>
 						</Row>
 						<Form.Item {...tailLayout}>
-							<Button type="primary" htmlType="submit">
-								Submit
-							</Button>
+							<Space size="large">
+								<Button type="success" htmlType="submit">
+									Hesapla
+								</Button>
+								<Button type="danger" onClick={resetAll}>
+									Temizle
+								</Button>
+							</Space>
 						</Form.Item>
 					</Form>
 				</Card>
+			</Col>
+			<Col span={24}>
+				<Row>
+					<Col span={12}>
+						<Card type="inner">
+							3. kart
+						</Card>
+					</Col>
+					<Col span={12}>
+						<Card type="inner">
+							4. kart
+						</Card>
+					</Col>
+				</Row>
 			</Col>
 		</Row>
 	)
