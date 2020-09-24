@@ -2,6 +2,8 @@
   "name": "soil-mech",
   "version": "0.1.0",
   "private": true,
+  "author": "melih şahin",
+  "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "@testing-library/jest-dom": "^4.2.4",

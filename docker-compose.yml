@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  soil-mech:
+    image: soil-mech:dev
+    stdin_open: true
+    build:
+      context: .
+    ports:
+      - "3000:3000"
