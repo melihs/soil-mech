@@ -11,6 +11,9 @@ I assume you have installed Docker and it is running.
 See the [Docker website](http://www.docker.io/gettingstarted/#h_installation) for installation instructions.
 See the Docker website for installation instructions.
 
+### Demo
+https://soil-mech.herokuapp.com/
+
 ### Build
 
 Steps to build a Docker image:
