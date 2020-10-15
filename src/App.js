@@ -12,7 +12,7 @@ const layout = {
 };
 
 const tailLayout = {
-	wrapperCol: {offset: 15, span: 24},
+	wrapperCol: {span: 24},
 };
 
 const {Option} = Select;
@@ -122,8 +122,8 @@ export default function App() {
 		let basicDepth = parseFloat(values.basicDepth);
 		let safetyFactor = parseFloat(values.safetyFactor);
 
-		let result = (k1 * cohesion * nc) + (unitWeight * basicDepth * nq) + (k2 * ng * basicWidth * safetyFactor);
-		let result2 = result / safetyFactor;
+		let result = Math.round((k1 * cohesion * nc) + (unitWeight * basicDepth * nq) + (k2 * ng * basicWidth * safetyFactor));
+		let result2 =Math.round(result / safetyFactor);
 		calculate(result);
 		calcSafetyFactor(result2);
 
@@ -301,63 +301,7 @@ export default function App() {
 									>
 										<Input/>
 									</Form.Item>
-								</Col>
-								<Col span={6}>
-									<Card type="inner" style={{borderColor: "transparent"}}>
-										<Form.Item
-											label="K1"
-											name="k1"
-										>
-											<Input/>
-										</Form.Item>
-
-										<Form.Item
-											label="K2"
-											name="k2"
-										>
-											<Input/>
-										</Form.Item>
-
-										<Form.Item
-											label="Nc"
-											name="nc"
-										>
-											<Input/>
-										</Form.Item>
-
-										<Form.Item
-											label="Nq"
-											name="nq"
-										>
-											<Input/>
-										</Form.Item>
-
-										<Form.Item
-											label="Ng"
-											name="ng"
-										>
-											<Input/>
-										</Form.Item>
-									</Card>
-								</Col>
-							</Row>
-
-							<Col span={24}>
-								<Row>
-									<Col span={12}>
-										<Card type="inner">
-											<h3 style={{color: "red"}}>
-												<b>Sonuçlar</b>
-											</h3>
-											<div>
-												<b>Qd taşıma gücü = </b> {result} kg/cm2
-											</div>
-											<div>
-												<b>Qs Emin taşıma gücü = </b> {secureResult} kg/cm2
-											</div>
-										</Card>
-									</Col>
-									<Col span={12}>
+									<Col span={24} style={{ float: 'right'}}>
 										<Form.Item {...tailLayout}>
 											<Space size="large">
 												<Button type="primary" htmlType="submit">
@@ -368,6 +312,62 @@ export default function App() {
 												</Button>
 											</Space>
 										</Form.Item>
+									</Col>
+								</Col>
+								<Col span={6}>
+									<Card type="inner" style={{borderColor: "transparent"}}>
+										<Form.Item
+											label="K1"
+											name="k1"
+										>
+											<Input disabled/>
+										</Form.Item>
+
+										<Form.Item
+											label="K2"
+											name="k2"
+										>
+											<Input disabled/>
+										</Form.Item>
+
+										<Form.Item
+											label="Nc"
+											name="nc"
+										>
+											<Input disabled/>
+										</Form.Item>
+
+										<Form.Item
+											label="Nq"
+											name="nq"
+										>
+											<Input disabled/>
+										</Form.Item>
+
+										<Form.Item
+											label="Ng"
+											name="ng"
+										>
+											<Input disabled/>
+										</Form.Item>
+									</Card>
+								</Col>
+							</Row>
+
+							<Col span={24}>
+								<Row>
+									<Col span={24}>
+										<Card type="inner" className="resultCard">
+											<h3 style={{color: "red"}}>
+												<b>Sonuçlar</b>
+											</h3>
+											<div>
+												<b>Qd taşıma gücü = </b> {result} kg/cm2
+											</div>
+											<div>
+												<b>Qs Emin taşıma gücü = </b> {secureResult} kg/cm2
+											</div>
+										</Card>
 									</Col>
 								</Row>
 							</Col>

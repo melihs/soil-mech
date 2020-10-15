@@ -10,3 +10,7 @@ body {
 .ant-form-item-label > label {
     /*color: #f4ebc1;*/
 }
+
+.resultCard {
+    box-shadow: 1px 9px 8px #888888;
+}
