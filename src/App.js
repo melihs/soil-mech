@@ -68,6 +68,8 @@ export default function App() {
 	const [result, calculate] = useState(0);
 	const [secureResult, calcSafetyFactor] = useState(0);
 	const [formData, setFormData] = useState(null);
+	const [exportBtn, setExportBtn] = useState(true);
+
 
 	const onFiAngleChange = (value) => {
 		form.setFieldsValue({
@@ -92,12 +94,14 @@ export default function App() {
 		// remove selected item
 		clearSelectedBaseType();
 	}
+	
 
 	const calculateButton = values => {
-		let cohesion = parseFloat(values.cohesion);
-		let nc = values.nc;
-		let basicLength = parseFloat(values.basicLength);
-		let basicType;
+		let cohesion = parseFloat(values.cohesion),
+			nc = values.nc,
+			basicLength = parseFloat(values.basicLength),
+			basicType;
+
 		switch (values.basicType) {
 			case '1':
 				basicType = 'Şerit Temel';
@@ -111,20 +115,27 @@ export default function App() {
 			case '4':
 				basicType = 'Dikdörtgen Temel';
 				break;
+			default:
+				basicType = 'Şerit Temel';
 		}
-		let fiAngle = values.fiAngle;
-		let nq = values.nq;
-		let ng = values.ng;
-		let k1 = values.k1;
-		let k2 = values.k2;
-		let basicWidth = parseFloat(values.basicWidth);
-		let unitWeight = parseFloat(values.unitWeight);
-		let basicDepth = parseFloat(values.basicDepth);
-		let safetyFactor = parseFloat(values.safetyFactor);
+		let fiAngle = values.fiAngle,
+			nq = values.nq,
+			ng = values.ng,
+			k1 = values.k1,
+			k2 = values.k2,
+			basicWidth = parseFloat(values.basicWidth),
+			unitWeight = parseFloat(values.unitWeight),
+			basicDepth = parseFloat(values.basicDepth),
+			safetyFactor = parseFloat(values.safetyFactor);
 
-		let result = Math.round((k1 * cohesion * nc) + (unitWeight * basicDepth * nq) + (k2 * ng * basicWidth * safetyFactor));
-		let result2 =Math.round(result / safetyFactor);
+		let	result = Math.round((k1 * cohesion * nc) + (unitWeight * basicDepth * nq) + (k2 * ng * basicWidth * safetyFactor)),
+			result2 =Math.round(result / safetyFactor);
+			if (!isNaN(result) || typeof result !== "undefined" ) {
+				setExportBtn(false);
+
+			}
 		calculate(result);
+		
 		calcSafetyFactor(result2);
 
 		setFormData([
@@ -147,6 +158,7 @@ export default function App() {
 		form.resetFields();
 		calculate(0);
 		calcSafetyFactor(0);
+		setExportBtn(true);
 	}
 
 	const onBasicTypeChange = (value) => {
@@ -195,7 +207,7 @@ export default function App() {
 	return (
 		<>
 			<Row>
-				<Col span={24}><MenuBar data={formData}/></Col>
+				<Col span={24}><MenuBar data={formData} buttonStatus= {exportBtn}/></Col>
 			</Row>
 			<Row>
 				<Col span={24}>
@@ -211,6 +223,12 @@ export default function App() {
 									<Form.Item
 										label="Temel Genişliği"
 										name="basicWidth"
+										rules={[
+											{
+												required: true,
+												message: 'Lütfen temel seçimi yapın'
+											}
+										]}
 										onChange={(e) => {
 											setBasicWidth(e.target.value)
 											clearSelectedBaseType();

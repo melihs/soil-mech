@@ -9,6 +9,7 @@ const {SubMenu} = Menu;
 
 export default function MenuBar(props) {
 	let formData = props.data;
+	let exportBtn = props.buttonStatus;
 
 	const exportToCSV = () => {
 		const ws = XLSX.utils.json_to_sheet(formData);
@@ -22,6 +23,7 @@ export default function MenuBar(props) {
 		<Menu mode="horizontal">
 			<SubMenu key="SubMenu" icon={< CaretDownOutlined/>} title="Dosya">
 				<Menu.Item
+					disabled = {exportBtn}
 					key="export"
 					icon={<DownloadOutlined/>}
 					onClick={exportToCSV}>

@@ -1,9 +1,9 @@
 {
   "name": "soil-mech",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "engines": {
-    "node": "12.8.4",
+    "node": "6.11.1",
     "npm": "6.14.5"
   },
   "author": "melih şahin",
@@ -24,7 +24,7 @@
     "xlsx": "^0.16.7"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
