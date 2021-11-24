@@ -9,8 +9,7 @@ An application to calculate floor bearing capacity using the terzaghi formula
 
 ### Demo
 
-https://soil-mech.herokuapp.com/
-
+https://soil-mech.netlify.app
   
 
 ### Run
@@ -21,17 +20,12 @@ $ git clone https://github.com/melihs/soil-mech.git
 
 $ cd soil-mech
 
-$ npm run start
+$ npm install
 
-```
-Open the browser
-
-```
-http://localhost:3000
+$ npm start
 
 ```
 
-  
 ## Built With
 
 
